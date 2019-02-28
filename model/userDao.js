@@ -62,7 +62,7 @@ var userDao = {
     checkUserLogin: function(req, res){
         var username = decodeURIComponent(req.query.username);
         var password = req.query.password;
-        var sql = 'select * from users where user_name = ?';
+        var sql = 'select user_id as userId, user_name as userName, password from users where user_name = ?';
         mysql.excute(sql, [username], function(error, result, fields){
             console.log(error, result, fields);
             if (error) {
@@ -73,21 +73,21 @@ var userDao = {
                 res.jsonp(statusObj);
             }else{
                 var loginFlag = result[0].password === password ? true : false ;
-                var data = {
-                    userName: result[0].user_name,
-                    userId: result[0].user_id,
-                    password: result[0].password,
-                }
                 var statusObj = {
                     "status": "200",
                     "message": "success",
                     "loginFlag" : loginFlag,
-                    "data": data
+                    "data": result[0]
                 }
                 res.jsonp(statusObj);
             }
         });
     },
+    /**
+     * 创建新用户
+     * @param {*} req 
+     * @param {*} res 
+     */
     insertUser: function(req, res){
         var userid = randomID();
         var username = decodeURIComponent(req.query.username);
