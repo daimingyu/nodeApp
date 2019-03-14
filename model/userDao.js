@@ -36,7 +36,7 @@ var userDao = {
         var username = decodeURIComponent(req.query.username);
         var sql = 'select * from users where user_name = ?';
         mysql.excute(sql, [username], function(error, result, fields){
-            console.log(error, result, fields);
+            console.log("ip:  "+req.ip);
             if (error) {
                 var statusObj = {
                     "status": "500",
@@ -73,11 +73,11 @@ var userDao = {
                 res.jsonp(statusObj);
             }else{
                 var loginFlag = result[0].password === password ? true : false ;
+                
                 var statusObj = {
                     "status": "200",
                     "message": "success",
-                    "loginFlag" : loginFlag,
-                    "data": result[0]
+                    "data": Object.assign(result[0],{loginFlag: loginFlag})
                 }
                 res.jsonp(statusObj);
             }
@@ -111,7 +111,64 @@ var userDao = {
                 res.jsonp(statusObj);
             }
         });
+    },
+    /**
+     * 更新用户名
+     * @param {*} req 
+     * @param {*} res 
+     */
+    updateUserName: function(req, res){
+        var userid = req.query.userid;
+        var username = decodeURIComponent(req.query.username);
+        var sql = 'update users set user_name=? where user_id = ?';
+        mysql.excute(sql, [username, userid], function(error, result, fields){
+            console.log(error, result, fields);
+            if (error) {
+                var statusObj = {
+                    "status": "500",
+                    "message": "服务器错误"
+                }
+                res.jsonp(statusObj);
+            }else{
+                var success = result.affectedRows === 1 ? true : false ;
+                var statusObj = {
+                    "status": "200",
+                    "message": "success",
+                    "success": success
+                }
+                res.jsonp(statusObj);
+            }
+        });
+    },
+    /**
+     * 更新用户密码
+     * @param {*} req 
+     * @param {*} res 
+     */
+	updateUserPass: function(req, res){
+        var userid = req.query.userId;
+        var password = req.query.password;
+        var sql = 'update users set password=? where user_id = ?';
+        mysql.excute(sql, [password, userid], function(error, result, fields){
+            console.log(error, result, fields);
+            if (error) {
+                var statusObj = {
+                    "status": "500",
+                    "message": "服务器错误"
+                }
+                res.jsonp(statusObj);
+            }else{
+                var success = result.affectedRows === 1 ? true : false ;
+                var statusObj = {
+                    "status": "200",
+                    "message": "success",
+                    "success": success
+                }
+                res.jsonp(statusObj);
+            }
+        });
     }
+
 };
 
 module.exports = userDao;

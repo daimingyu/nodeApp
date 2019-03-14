@@ -31,4 +31,18 @@ router.get('/InsertUser', function(req, res, next) {
 	userDao.insertUser(req, res);
 });
 
+/**
+ * 更新用户名
+ */
+router.get('/UpdateUserName', function(req, res, next) {
+	userDao.updateUserName(req, res);
+});
+
+/**
+ * 更新用户密码
+ */
+router.get('/UpdateUserPass', function(req, res, next) {
+	userDao.updateUserPass(req, res);
+});
+
 module.exports = router;
